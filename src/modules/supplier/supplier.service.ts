@@ -17,12 +17,14 @@ import {
 import { CategoryService } from "../category/category.service";
 import { randomInt } from "crypto";
 import { SupplierOTPEntity } from "./entities/otp.entity";
-import { CheckOtpDto } from "../auth/dto/otp.dto";
+import { CheckOtpDto, SendOtpDto } from "../auth/dto/otp.dto";
 import { JwtService } from "@nestjs/jwt";
 import { PayloadType } from "../auth/types/payload";
 import { REQUEST } from "@nestjs/core";
 import { Request } from "express";
 import { SupplierStatus } from "./enum/status.enum";
+import { DocumentType } from "./type";
+import { S3Service } from "../s3/s3.service";
 
 @Injectable({ scope: Scope.REQUEST })
 export class SupplierService {
@@ -37,7 +39,8 @@ export class SupplierService {
 
     private categoryService: CategoryService,
 
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private s3Service: S3Service
   ) {}
 
   async signup(signupDto: SupplierSignupDto) {
@@ -74,6 +77,18 @@ export class SupplierService {
     await this.createOtpForSupplier(account);
     return {
       message: "otp code send successfully",
+    };
+  }
+
+  async sendOtp(otpDto: SendOtpDto) {
+    const { mobile } = otpDto;
+    let supplier = await this.supplierRepository.findOneBy({ mobile });
+    if (!supplier) {
+      throw new UnauthorizedException("not found account");
+    }
+    await this.createOtpForSupplier(supplier);
+    return {
+      message: "sent code successfully",
     };
   }
 
@@ -156,13 +171,19 @@ export class SupplierService {
         secret: process.env.ACCESS_TOKEN_SECRET,
       });
       if (typeof payload === "object" && payload?.id) {
-        const user = await this.supplierRepository.findOneBy({
+        const supplier = await this.supplierRepository.findOneBy({
           id: payload.id,
         });
-        if (!user) {
+        if (!supplier) {
           throw new UnauthorizedException("login on your account ");
         }
-        return user;
+        return {
+          id: supplier.id,
+          first_name: supplier.manager_name,
+          last_name: supplier.manager_family,
+          email: supplier.email,
+          mobile: supplier.mobile,
+        };
       }
       throw new UnauthorizedException("login on your account ");
     } catch (error) {
@@ -190,8 +211,22 @@ export class SupplierService {
     return { message: "updated information successfully" };
   }
 
-  async UploadDocument(files: Express.Multer.File[]) {
-    console.log(files);
-    return files;
+  async UploadDocument(files: DocumentType) {
+    const { id } = this.req.user;
+    const { image, acceptedDoc } = files;
+    const supplier = await this.supplierRepository.findOneBy({ id });
+    const imageResult = await this.s3Service.uplodFiles(image[0], "images");
+    const docsResult = await this.s3Service.uplodFiles(
+      acceptedDoc[0],
+      "acceptedDocs"
+    );
+
+    if (imageResult) supplier.image = imageResult.Location;
+    if (docsResult) supplier.document = docsResult.Location;
+    supplier.status = SupplierStatus.UploadedDocument;
+    await this.supplierRepository.save(supplier);
+    return {
+      message: "success",
+    };
   }
 }

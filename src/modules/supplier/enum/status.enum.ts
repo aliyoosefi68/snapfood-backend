@@ -3,4 +3,5 @@ export enum SupplierStatus {
   SupplimentaryInformation = "supplimentary-information",
   UploadedDocument = "uploaded_document",
   Contract = "contract",
+  Accepted = "accepted",
 }

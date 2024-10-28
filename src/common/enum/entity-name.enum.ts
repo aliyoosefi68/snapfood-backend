@@ -5,4 +5,9 @@ export enum EntityNames {
   Category = "category",
   Supplier = "supplier",
   SupplierOtp = "supplier_otp",
+  MenuType = "menu-type",
+  Menu = "menu",
+  MenuItem = "menu_item",
+  Feedbacks = "feedback",
+  Type = "type",
 }

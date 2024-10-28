@@ -11,11 +11,19 @@ import {
 } from "typeorm";
 import { SupplierOTPEntity } from "./otp.entity";
 import { SupplierStatus } from "../enum/status.enum";
+import { TypeEntity } from "src/modules/menu/entities/type.entity";
+import { MenuEntity } from "src/modules/menu/entities/menu.entity";
 
 @Entity(EntityNames.Supplier)
 export class SupplierEntity {
   @PrimaryGeneratedColumn("increment")
   id: number;
+
+  @Column({ nullable: true, unique: true })
+  slug: string;
+
+  @Column()
+  mobile: string;
 
   @Column()
   manager_name: string;
@@ -35,10 +43,13 @@ export class SupplierEntity {
   @Column({ nullable: true, default: SupplierStatus.Registred })
   status: string;
 
-  @Column()
-  mobile: string;
   @Column({ nullable: true, default: false })
   mobile_verify: boolean;
+
+  @Column({ nullable: true })
+  image: string;
+  @Column({ nullable: true })
+  document: string;
 
   @Column({ nullable: true })
   categoryId: number;
@@ -65,4 +76,10 @@ export class SupplierEntity {
   @OneToOne(() => SupplierOTPEntity, (otp) => otp.supplier)
   @JoinColumn()
   otp: SupplierOTPEntity;
+
+  @OneToMany(() => TypeEntity, (type) => type.supplier)
+  menuTypes: TypeEntity;
+
+  @OneToMany(() => MenuEntity, (food) => food.supplier)
+  menu: MenuEntity[];
 }

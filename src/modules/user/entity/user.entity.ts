@@ -11,6 +11,7 @@ import {
 } from "typeorm";
 import { UserAdderssEntity } from "./address.entity";
 import { OTPEntity } from "./otp.entity";
+import { FeedbackEntity } from "src/modules/menu/entities/feedback.entity";
 
 @Entity(EntityNames.User)
 export class UserEntity {
@@ -48,4 +49,7 @@ export class UserEntity {
   @OneToOne(() => OTPEntity, (otp) => otp.user)
   @JoinColumn()
   otp: OTPEntity;
+
+  @OneToMany(() => FeedbackEntity, (feedback) => feedback.user)
+  feedbacks: FeedbackEntity[];
 }
