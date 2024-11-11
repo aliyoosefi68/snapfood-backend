@@ -13,6 +13,7 @@ import { SupplierOTPEntity } from "./otp.entity";
 import { SupplierStatus } from "../enum/status.enum";
 import { TypeEntity } from "src/modules/menu/entities/type.entity";
 import { MenuEntity } from "src/modules/menu/entities/menu.entity";
+import { OrderItemEntity } from "src/modules/order/entity/order-item.entity";
 
 @Entity(EntityNames.Supplier)
 export class SupplierEntity {
@@ -82,4 +83,7 @@ export class SupplierEntity {
 
   @OneToMany(() => MenuEntity, (food) => food.supplier)
   menu: MenuEntity[];
+
+  @OneToMany(() => OrderItemEntity, (food) => food.supplier)
+  orders: OrderItemEntity[];
 }

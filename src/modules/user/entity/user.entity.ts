@@ -12,6 +12,9 @@ import {
 import { UserAdderssEntity } from "./address.entity";
 import { OTPEntity } from "./otp.entity";
 import { FeedbackEntity } from "src/modules/menu/entities/feedback.entity";
+import { UserBasket } from "src/modules/bascket/entity/basket.entity";
+import { OrderEntity } from "src/modules/order/entity/order.entity";
+import { PaymentEntity } from "src/modules/payment/entity/payment.entity";
 
 @Entity(EntityNames.User)
 export class UserEntity {
@@ -52,4 +55,12 @@ export class UserEntity {
 
   @OneToMany(() => FeedbackEntity, (feedback) => feedback.user)
   feedbacks: FeedbackEntity[];
+
+  @OneToMany(() => UserBasket, (basket) => basket.user)
+  basket: UserBasket;
+
+  @OneToMany(() => OrderEntity, (order) => order.address)
+  orders: OrderEntity[];
+  @OneToMany(() => PaymentEntity, (payment) => payment.user)
+  payments: PaymentEntity[];
 }

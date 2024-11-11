@@ -10,4 +10,9 @@ export enum EntityNames {
   MenuItem = "menu_item",
   Feedbacks = "feedback",
   Type = "type",
+  UserBasket = "user-basket",
+  Discount = "discount",
+  Order = "order",
+  OrderItem = "order-item",
+  Payment = "payment",
 }

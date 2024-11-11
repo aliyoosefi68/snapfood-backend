@@ -100,4 +100,12 @@ export class MenuService {
     if (!item) throw new NotFoundException("this itom notfound");
     return item;
   }
+
+  async getOne(id: number) {
+    const item = await this.menuRepository.findOne({
+      where: { id },
+    });
+    if (!item) throw new NotFoundException();
+    return item;
+  }
 }

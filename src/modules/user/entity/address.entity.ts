@@ -4,9 +4,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from "typeorm";
 import { UserEntity } from "./user.entity";
+import { OrderEntity } from "src/modules/order/entity/order.entity";
 
 @Entity(EntityNames.UserAddress)
 export class UserAdderssEntity {
@@ -34,4 +36,7 @@ export class UserAdderssEntity {
     onDelete: "CASCADE",
   })
   user: UserEntity;
+
+  @OneToMany(() => OrderEntity, (order) => order.address)
+  orders: OrderEntity[];
 }

@@ -10,6 +10,8 @@ import {
 } from "typeorm";
 import { TypeEntity } from "./type.entity";
 import { FeedbackEntity } from "./feedback.entity";
+import { UserBasket } from "src/modules/bascket/entity/basket.entity";
+import { OrderItemEntity } from "src/modules/order/entity/order-item.entity";
 
 @Entity(EntityNames.Menu)
 export class MenuEntity {
@@ -31,6 +33,9 @@ export class MenuEntity {
   @Column({ type: "double", default: 1 })
   score: string;
 
+  @Column({ default: false })
+  is_active: boolean;
+
   @Column()
   typeId: number;
   @ManyToOne(() => TypeEntity, (type) => type.items)
@@ -45,4 +50,10 @@ export class MenuEntity {
 
   @OneToMany(() => FeedbackEntity, (feedback) => feedback.food)
   feedbacks: FeedbackEntity[];
+
+  @OneToMany(() => UserBasket, (basket) => basket.food)
+  baskets: UserBasket;
+
+  @OneToMany(() => OrderItemEntity, (order) => order.food)
+  orders: OrderItemEntity[];
 }

@@ -7,6 +7,10 @@ import { CategoryModule } from "../category/category.module";
 import { AuthModule } from "../auth/auth.module";
 import { SupplierModule } from "../supplier/supplier.module";
 import { MenuModule } from "../menu/menu.module";
+import { DiscountModule } from "../discount/discount.module";
+import { BasketModule } from "../bascket/basket.module";
+import { PaymentModule } from "../payment/payment.module";
+import { HttpApiModule } from "../http/http.module";
 
 @Module({
   imports: [
@@ -15,6 +19,10 @@ import { MenuModule } from "../menu/menu.module";
     AuthModule,
     SupplierModule,
     MenuModule,
+    DiscountModule,
+    BasketModule,
+    PaymentModule,
+    HttpApiModule,
   ],
   controllers: [AppController],
   providers: [AppService],
